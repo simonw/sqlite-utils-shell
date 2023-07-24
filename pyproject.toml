@@ -1,0 +1,25 @@
+[project]
+name = "sqlite-utils-shell"
+version = "0.1"
+description = "An interactive shell for sqlite-utils"
+readme = "README.md"
+authors = [{name = "Simon Willison"}]
+license = {text = "Apache-2.0"}
+classifiers = [
+    "License :: OSI Approved :: Apache Software License"
+]
+dependencies = [
+    "sqlite-utils"
+]
+
+[project.urls]
+Homepage = "https://github.com/simonw/sqlite-utils-shell"
+Changelog = "https://github.com/simonw/sqlite-utils-shell/releases"
+Issues = "https://github.com/simonw/sqlite-utils-shell/issues"
+CI = "https://github.com/simonw/sqlite-utils-shell/actions"
+
+[project.entry-points.sqlite_utils]
+shell = "sqlite_utils_shell"
+
+[project.optional-dependencies]
+test = ["pytest"]
