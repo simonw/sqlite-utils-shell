@@ -1,8 +1,8 @@
 import click
-import itertools
 import readline
 import sqlite_utils
 from sqlite_utils.utils import sqlite3
+import sys
 import tabulate
 
 MAX_ROWS_TO_RETURN = 100
@@ -45,7 +45,14 @@ def register_commands(cli):
     )
     def shell(path):
         "Start an interactive SQL shell for this database"
-        run_sql_shell(path, input, print)
+
+        def input_(prompt):
+            try:
+                return click.prompt(prompt, type=str, prompt_suffix="")
+            except click.exceptions.Abort:
+                sys.exit(0)
+
+        run_sql_shell(path, input_, lambda *args: click.echo(" ".join(map(str, args))))
 
 
 def run_sql_shell(path, input_, print_):
