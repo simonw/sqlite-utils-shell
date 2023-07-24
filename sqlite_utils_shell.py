@@ -45,18 +45,18 @@ def register_commands(cli):
     )
     def shell(path):
         "Start an interactive SQL shell for this database"
-        run_sql_shell(path)
+        run_sql_shell(path, input, print)
 
 
-def run_sql_shell(path):
+def run_sql_shell(path, input_, print_):
     if path:
         db = sqlite_utils.Database(path)
-        print("Attached to {}".format(path))
+        print_("Attached to {}".format(path))
     else:
         db = sqlite_utils.Database(memory=True)
-        print("In-memory database, content will be lost on exit")
+        print_("In-memory database, content will be lost on exit")
 
-    print("Type 'exit' to exit.")
+    print_("Type 'exit' to exit.")
 
     statement = ""
 
@@ -70,7 +70,7 @@ def run_sql_shell(path):
         return True
 
     while True:
-        line = input(prompt)
+        line = input_(prompt)
         if line:
             readline.add_history(line)
 
@@ -81,7 +81,9 @@ def run_sql_shell(path):
 
         statement += "\n" + line
 
-        if sqlite3.complete_statement(statement) or is_valid_query(statement + ";"):
+        if sqlite3.complete_statement(statement) or (
+            not statement.strip().endswith(";") and is_valid_query(statement + ";")
+        ):
             try:
                 statement = statement.strip()
                 cursor = db.execute(statement)
@@ -89,7 +91,7 @@ def run_sql_shell(path):
                     # It was create table / insert / update
                     rowcount = cursor.rowcount
                     if rowcount != -1:
-                        print(
+                        print_(
                             "{} row{} affected".format(
                                 rowcount, "s" if rowcount != 1 else ""
                             )
@@ -100,16 +102,16 @@ def run_sql_shell(path):
                     # Only show first MAX_ROWS_TO_RETURN
                     first_rows = list(cursor.fetchmany(MAX_ROWS_TO_RETURN + 1))
                     has_more = len(first_rows) == MAX_ROWS_TO_RETURN + 1
-                    print(
+                    print_(
                         tabulate.tabulate(
                             first_rows[:MAX_ROWS_TO_RETURN], headers=headers
                         )
                     )
                     if has_more:
-                        print("[ results were truncated ]")
+                        print_("[ results were truncated ]")
 
             except sqlite3.Error as e:
-                print("An error occurred:", e)
+                print_("An error occurred:", e)
 
             finally:
                 prompt = "sqlite-utils> "
