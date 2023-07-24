@@ -96,6 +96,8 @@ def run_sql_shell(path, input_, print_):
                                 rowcount, "s" if rowcount != 1 else ""
                             )
                         )
+                    else:
+                        print_("Done")
                 else:
                     headers = [row[0] for row in cursor.description]
 

@@ -19,6 +19,15 @@ def test_plugin_is_installed():
             ],
         ),
         (["select 5 +", "5"], ["  5 +\n    5\n-----\n   10"]),
+        (
+            [
+                "create table foo(id integer primary key)",
+                "insert into foo (id) values (5);",
+                "insert into foo (id) values (7);",
+                "delete from foo;",
+            ],
+            ["Done", "1 row affected", "1 row affected", "2 rows affected"],
+        ),
     ),
 )
 def test_run_sql_shell(inputs, expected_outputs):
