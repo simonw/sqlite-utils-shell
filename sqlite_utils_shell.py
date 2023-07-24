@@ -40,16 +40,20 @@ readline.set_completer(completer)
 @sqlite_utils.hookimpl
 def register_commands(cli):
     @cli.command()
-    @click.argument("path", type=click.Path(dir_okay=False, readable=True))
+    @click.argument("path", type=click.Path(dir_okay=False, readable=True), required=False)
     def shell(path):
         "Start an interactive SQL shell for this database"
         run_sql_shell(path)
 
 
 def run_sql_shell(path):
-    db = sqlite_utils.Database(path)
+    if path:
+        db = sqlite_utils.Database(path)
+        print("Attached to {}".format(path))
+    else:
+        db = sqlite_utils.Database(memory=True)
+        print("In-memory database, content will be lost on exit")
 
-    print("Enter your SQL commands to execute in sqlite3.")
     print("Type 'exit' to exit.")
 
     statement = ""
