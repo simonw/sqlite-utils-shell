@@ -40,7 +40,9 @@ readline.set_completer(completer)
 @sqlite_utils.hookimpl
 def register_commands(cli):
     @cli.command()
-    @click.argument("path", type=click.Path(dir_okay=False, readable=True), required=False)
+    @click.argument(
+        "path", type=click.Path(dir_okay=False, readable=True), required=False
+    )
     def shell(path):
         "Start an interactive SQL shell for this database"
         run_sql_shell(path)
@@ -60,6 +62,13 @@ def run_sql_shell(path):
 
     prompt = "sqlite-utils> "
 
+    def is_valid_query(sql):
+        try:
+            db.execute("explain " + sql)
+        except sqlite3.OperationalError:
+            return False
+        return True
+
     while True:
         line = input(prompt)
         if line:
@@ -72,7 +81,7 @@ def run_sql_shell(path):
 
         statement += "\n" + line
 
-        if sqlite3.complete_statement(statement):
+        if sqlite3.complete_statement(statement) or is_valid_query(statement + ";"):
             try:
                 statement = statement.strip()
                 cursor = db.execute(statement)
