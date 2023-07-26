@@ -5,7 +5,9 @@
 [![Tests](https://github.com/simonw/sqlite-utils-shell/workflows/Test/badge.svg)](https://github.com/simonw/sqlite-utils-shell/actions?query=workflow%3ATest)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/simonw/sqlite-utils-shell/blob/main/LICENSE)
 
-An interactive shell for sqlite-utils
+An interactive shell for [sqlite-utils](https://sqlite-utils.datasette.io/)
+
+**Alternative**: [sqlite-utils-litecli](https://github.com/simonw/sqlite-utils-litecli) is similar to this but better, because it includes full autocompletion against table and column names.
 
 ## Installation
 
