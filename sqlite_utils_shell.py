@@ -43,7 +43,13 @@ def register_commands(cli):
     @click.argument(
         "path", type=click.Path(dir_okay=False, readable=True), required=False
     )
-    def shell(path):
+    @click.option(
+        "load_extensions",
+        "--load-extension",
+        multiple=True,
+        type=click.Path(exists=True),
+    )
+    def shell(path, load_extensions):
         "Start an interactive SQL shell for this database"
 
         def input_(prompt):
@@ -52,16 +58,26 @@ def register_commands(cli):
             except click.exceptions.Abort:
                 sys.exit(0)
 
-        run_sql_shell(path, input_, lambda *args: click.echo(" ".join(map(str, args))))
+        run_sql_shell(
+            path,
+            input_,
+            lambda *args: click.echo(" ".join(map(str, args))),
+            load_extensions,
+        )
 
 
-def run_sql_shell(path, input_, print_):
+def run_sql_shell(path, input_, print_, load_extensions):
     if path:
         db = sqlite_utils.Database(path)
         print_("Attached to {}".format(path))
     else:
         db = sqlite_utils.Database(memory=True)
         print_("In-memory database, content will be lost on exit")
+
+    if load_extensions:
+        db.conn.enable_load_extension(True)
+        for extension in load_extensions:
+            db.conn.load_extension(str(extension))
 
     print_("Type 'exit' to exit.")
 

@@ -24,6 +24,14 @@ sqlite-utils shell data.db
 ```
 Type `quit` or `exit` to end the session.
 
+Omit the filename to run against an in-memory database.
+
+To load additional SQLite extensions pass their paths as one or more `--load-extension` arguments:
+```bash
+sqlite-utils shell data.db \
+  --load-extension /path/to/extension.so
+```
+
 ## Development
 
 To set up this plugin locally, first checkout the code. Then create a new virtual environment:
