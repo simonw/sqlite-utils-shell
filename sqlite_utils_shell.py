@@ -66,7 +66,7 @@ def register_commands(cli):
         )
 
 
-def run_sql_shell(path, input_, print_, load_extensions):
+def run_sql_shell(path, input_, print_, load_extensions=None):
     if path:
         db = sqlite_utils.Database(path)
         print_("Attached to {}".format(path))
